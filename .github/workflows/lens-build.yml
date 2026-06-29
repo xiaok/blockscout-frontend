@@ -1,9 +1,9 @@
 name: Build & push Lens frontend image
 
-# Builds this fork's frontend into a Docker image and pushes it to GHCR.
-# No secrets are used or stored here — auth is GitHub's built-in GITHUB_TOKEN.
-# Runtime config (NEXT_PUBLIC_*) is injected on the server at container start,
-# so this image stays chain-agnostic and contains no credentials.
+# Builds this fork's frontend into a Docker image, pushes it to GHCR, then (optionally)
+# deploys it to the server. No secrets are baked into the image — auth for the build is
+# GitHub's built-in GITHUB_TOKEN; the deploy step uses repo secrets and is skipped if unset.
+# Runtime config (NEXT_PUBLIC_*) is injected on the server at container start.
 
 on:
   push:
@@ -61,3 +61,26 @@ jobs:
             GIT_COMMIT_SHA=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/lens'
+    steps:
+      - name: Deploy to server (pull + up -d frontend)
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          if [ -z "$DEPLOY_SSH_KEY" ] || [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_USER" ]; then
+            echo "::notice::Deploy secrets not set — skipping deploy."
+            echo "Add DEPLOY_SSH_KEY / DEPLOY_HOST / DEPLOY_USER to enable auto-deploy."
+            exit 0
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          echo "Triggering server deploy…"
+          ssh -i ~/.ssh/id_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=20 "$DEPLOY_USER@$DEPLOY_HOST" deploy
