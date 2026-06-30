@@ -122,7 +122,10 @@ const Content = chakra((props: ContentProps) => {
   const nameTag = props.address.metadata?.tags.find(tag => tag.tagType === 'name')?.name;
   const nameText = nameTag || props.address.ens_domain_name || props.address.name;
 
-  const isProxy = props.address.implementations && props.address.implementations.length > 0 && props.address.proxy_type !== 'eip7702';
+  const isProxy = props.address.implementations &&
+    props.address.implementations.length > 0 &&
+    props.address.proxy_type !== 'eip7702' &&
+    !props.address.ens_domain_name;
 
   if (isProxy) {
     return <AddressEntityContentProxy { ...props }/>;

@@ -111,6 +111,16 @@ test.describe('proxy contract', () => {
     await expect(page).toHaveScreenshot();
   });
 
+  test('with ENS domain name', async({ render }) => {
+    const component = await render(
+      <AddressEntity
+        address={{ ...addressMock.contract, ens_domain_name: 'lens/proxy-test', proxy_type: 'eip1967' }}
+      />,
+    );
+
+    await expect(component.getByText('lens/proxy-test')).toBeVisible();
+  });
+
   test('without implementation name', async({ render, page }) => {
     const component = await render(
       <AddressEntity
