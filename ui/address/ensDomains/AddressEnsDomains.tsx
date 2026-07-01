@@ -4,9 +4,11 @@ import { clamp } from 'es-toolkit';
 import React from 'react';
 
 import type * as bens from '@blockscout/bens-types';
+import { getFeaturePayload } from 'configs/app/features/types';
 
 import { route } from 'nextjs-routes';
 
+import config from 'configs/app';
 import type { ResourceError } from 'lib/api/resources';
 import dayjs from 'lib/date/dayjs';
 import { Button } from 'toolkit/chakra/button';
@@ -38,6 +40,7 @@ const DomainsGrid = ({ data }: { data: Array<bens.Domain> }) => {
 
 const AddressEnsDomains = ({ query, addressHash, mainDomainName }: Props) => {
   const { data, isPending, isError } = query;
+  const isLookupEnabled = Boolean(getFeaturePayload(config.features.nameService)?.isLookupEnabled);
 
   if (isError) {
     return null;
@@ -125,7 +128,7 @@ const AddressEnsDomains = ({ query, addressHash, mainDomainName }: Props) => {
               <DomainsGrid data={ resolvedDomains }/>
             </div>
           ) }
-          { (ownedDomains.length > 9 || resolvedDomains.length > 9) && (
+          { isLookupEnabled && (ownedDomains.length > 9 || resolvedDomains.length > 9) && (
             <Link
               href={ route({ pathname: '/name-domains', query: { owned_by: 'true', resolved_to: 'true', address: addressHash } }) }
             >

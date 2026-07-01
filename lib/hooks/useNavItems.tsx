@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { getFeaturePayload } from 'configs/app/features/types';
 import type { NavItemInternal, NavItem, NavGroupItem } from 'types/client/navigation';
 
 import config from 'configs/app';
@@ -82,7 +83,8 @@ export default function useNavItems(): ReturnType {
        icon: 'verified',
        isActive: pathname === '/verified-contracts',
      };
-    const ensLookup = config.features.nameService.isEnabled ? {
+    const isNameServiceLookupEnabled = Boolean(getFeaturePayload(config.features.nameService)?.isLookupEnabled);
+    const ensLookup = isNameServiceLookupEnabled ? {
       text: 'Name services lookup',
       nextRoute: { pathname: '/name-domains' as const },
       icon: 'ENS',

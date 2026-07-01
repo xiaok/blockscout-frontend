@@ -102,7 +102,7 @@ module.exports = {
         }
         break;
       case '/name-domains':
-        if (!process.env.NEXT_PUBLIC_NAME_SERVICE_API_HOST) {
+        if (!process.env.NEXT_PUBLIC_NAME_SERVICE_API_HOST || process.env.NEXT_PUBLIC_NAME_SERVICE_LOOKUP_ENABLED === 'false') {
           return null;
         }
         break;
