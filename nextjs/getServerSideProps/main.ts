@@ -12,6 +12,7 @@ export const csvExport = factory([ guards.csvExport ]);
 export const stats = factory([ guards.stats ]);
 export const suave = factory([ guards.suave ]);
 export const nameService = factory([ guards.nameService ]);
+export const nameServiceLookup = factory([ guards.nameServiceLookup ]);
 export const accounts = factory([ guards.accounts ]);
 export const accountsLabelSearch = factory([ guards.accountsLabelSearch ]);
 export const validators = factory([ guards.validators ]);

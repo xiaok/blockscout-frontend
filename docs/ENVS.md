@@ -671,6 +671,7 @@ This feature allows resolving blockchain addresses using human-readable domain n
 | Variable | Type| Description | Compulsoriness  | Default value | Example value | Version |
 | --- | --- | --- | --- | --- | --- | --- |
 | NEXT_PUBLIC_NAME_SERVICE_API_HOST | `string` | Name Service API endpoint url | Required | - | `https://bens.services.blockscout.com` | v1.22.0+ |
+| NEXT_PUBLIC_NAME_SERVICE_LOOKUP_ENABLED | `boolean` | Enables name service lookup page and related navigation links | - | `true` | `false` | next |
 
 &nbsp;
 

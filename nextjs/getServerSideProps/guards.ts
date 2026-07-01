@@ -1,5 +1,6 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
+import { getFeaturePayload } from 'configs/app/features/types';
 import type { RollupType } from 'types/client/rollup';
 
 import type { Route } from 'nextjs-routes';
@@ -77,6 +78,14 @@ export const suave: Guard = (chainConfig: typeof config) => async() => {
 
 export const nameService: Guard = (chainConfig: typeof config) => async() => {
   if (!chainConfig.features.nameService.isEnabled) {
+    return {
+      notFound: true,
+    };
+  }
+};
+
+export const nameServiceLookup: Guard = (chainConfig: typeof config) => async() => {
+  if (!getFeaturePayload(chainConfig.features.nameService)?.isLookupEnabled) {
     return {
       notFound: true,
     };

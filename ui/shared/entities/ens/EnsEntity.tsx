@@ -2,9 +2,11 @@ import { chakra, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import type * as bens from '@blockscout/bens-types';
+import { getFeaturePayload } from 'configs/app/features/types';
 
 import { route } from 'nextjs-routes';
 
+import config from 'configs/app';
 import { Image } from 'toolkit/chakra/image';
 import { Link as LinkToolkit } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
@@ -138,11 +140,12 @@ export interface EntityProps extends EntityBase.EntityBaseProps {
 const EnsEntity = (props: EntityProps) => {
   const partsProps = distributeEntityProps(props);
   const content = <Content { ...partsProps.content }/>;
+  const isLookupEnabled = Boolean(getFeaturePayload(config.features.nameService)?.isLookupEnabled);
 
   return (
     <Container { ...partsProps.container }>
       <Icon { ...partsProps.icon }/>
-      { props.noLink ? content : <Link { ...partsProps.link }>{ content }</Link> }
+      { props.noLink || !isLookupEnabled ? content : <Link { ...partsProps.link }>{ content }</Link> }
       <Copy { ...partsProps.copy }/>
     </Container>
   );
